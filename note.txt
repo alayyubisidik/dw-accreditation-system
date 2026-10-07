@@ -1,0 +1,24 @@
+1. . Akreditasi Fakultas (tidak ada angka)
+62. IPK Lulusan (value rata rata)
+81. Mitra Industri (lebih dari)
+7. Manajemen Risiko (persentase)
+
+fitur yg blm
+
+
+tambahin rumus yg blm
+preview contoh rumus
+Preview dokumen keseluruhan 1 accreditation
+Export PDF
+Upload bukti pendukung
+Dashboard monitoring
+Review & komentar
+
+nanti alur akredtasinya bagaimana?
+apakah nanti ada asesor yg login di system?
+trus ini fiturnya kan masih sampai create indicator dan isi value nah bagaimana pengukuran agar sampai pada akreditasi tertentu
+
+
+
+
+

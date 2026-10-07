@@ -1,0 +1,255 @@
+@startuml
+hide circle
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+'==================================================
+' MASTER DATA (SHARED)
+'==================================================
+
+entity "faculties" as faculties {
+    * id : bigint UNSIGNED <<PK>>
+    --
+    name : varchar(255)
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+entity "study_programs" as study_programs {
+    * id : bigint UNSIGNED <<PK>>
+    --
+    faculty_id : bigint UNSIGNED <<FK>>
+    name : varchar(255)
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+entity "users" as users {
+    * id : bigint UNSIGNED <<PK>>
+    --
+    study_program_id : bigint UNSIGNED <<FK>> (nullable, null = admin)
+    name : varchar(255)
+    email : varchar(255) <<UNIQUE>>
+    password : varchar(255)
+    role : enum(admin, operator)
+    avatar : varchar(255)
+    is_active : boolean
+    remember_token : varchar(100)
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+
+'==================================================
+' UNIVERSITY ACCREDITATION (LEVEL KAMPUS)
+'==================================================
+
+entity "university_accreditation_agencies" as uni_agencies {
+    * id : bigint UNSIGNED <<PK>>
+    --
+    name : varchar(255)
+    description : text
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+entity "university_indicator_templates" as uni_templates {
+    * id : bigint UNSIGNED <<PK>>
+    --
+    university_accreditation_agency_id : bigint UNSIGNED <<FK>>
+    title : varchar(255)
+    description : text
+    formula_type : enum(percentage, ratio)
+    label_1 : varchar(255)
+    label_2 : varchar(255)
+    target : decimal(10,2)
+    gap_unit : varchar(50)
+    strategic_reason : text
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+entity "university_accreditation_batches" as uni_batches {
+    * id : bigint UNSIGNED <<PK>>
+    --
+    university_accreditation_agency_id : bigint UNSIGNED <<FK>>
+    name : varchar(255)
+    year : year
+    is_active : boolean
+    description : text
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+entity "university_accreditations" as uni_accreditations {
+    * id : bigint UNSIGNED <<PK>>
+    --
+    university_accreditation_batch_id : bigint UNSIGNED <<FK>>
+    status : enum(in_progress, completed)
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+entity "university_accreditation_indicators" as uni_indicators {
+    * id : bigint UNSIGNED <<PK>>
+    --
+    university_accreditation_id : bigint UNSIGNED <<FK>>
+    university_indicator_template_id : bigint UNSIGNED <<FK>>
+    title : varchar(255)
+    description : text
+    formula_type : enum(percentage, ratio)
+    label_1 : varchar(255)
+    label_2 : varchar(255)
+    target : decimal(10,2)
+    strategic_reason : text
+    value_1 : decimal(15,2)
+    value_2 : decimal(15,2)
+    result : decimal(15,2)
+    target_absolute : decimal(15,2)
+    gap : decimal(15,2)
+    gap_unit : varchar(50)
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+entity "university_indicator_files" as uni_files {
+    * id : bigint UNSIGNED <<PK>>
+    --
+    university_accreditation_indicator_id : bigint UNSIGNED <<FK, UNIQUE>>
+    original_name : varchar(255)
+    file_name : varchar(255)
+    file_path : varchar(255)
+    file_size : bigint UNSIGNED
+    uploaded_by : bigint UNSIGNED <<FK>>
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+
+'==================================================
+' STUDY PROGRAM ACCREDITATION (LEVEL PRODI)
+'==================================================
+
+entity "study_program_accreditation_agencies" as sp_agencies {
+    * id : bigint UNSIGNED <<PK>>
+    --
+    name : varchar(255)
+    description : text
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+entity "study_program_indicator_templates" as sp_templates {
+    * id : bigint UNSIGNED <<PK>>
+    --
+    study_program_accreditation_agency_id : bigint UNSIGNED <<FK>>
+    title : varchar(255)
+    description : text
+    formula_type : enum(percentage, ratio)
+    label_1 : varchar(255)
+    label_2 : varchar(255)
+    target : decimal(10,2)
+    gap_unit : varchar(50)
+    strategic_reason : text
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+entity "study_program_accreditation_batches" as sp_batches {
+    * id : bigint UNSIGNED <<PK>>
+    --
+    study_program_accreditation_agency_id : bigint UNSIGNED <<FK>>
+    name : varchar(255)
+    year : year
+    is_active : boolean
+    description : text
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+entity "study_program_accreditations" as sp_accreditations {
+    * id : bigint UNSIGNED <<PK>>
+    --
+    study_program_accreditation_batch_id : bigint UNSIGNED <<FK>>
+    study_program_id : bigint UNSIGNED <<FK>>
+    status : enum(in_progress, completed)
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+entity "study_program_accreditation_indicators" as sp_indicators {
+    * id : bigint UNSIGNED <<PK>>
+    --
+    study_program_accreditation_id : bigint UNSIGNED <<FK>>
+    study_program_indicator_template_id : bigint UNSIGNED <<FK>>
+    title : varchar(255)
+    description : text
+    formula_type : enum(percentage, ratio)
+    label_1 : varchar(255)
+    label_2 : varchar(255)
+    target : decimal(10,2)
+    strategic_reason : text
+    value_1 : decimal(15,2)
+    value_2 : decimal(15,2)
+    result : decimal(15,2)
+    target_absolute : decimal(15,2)
+    gap : decimal(15,2)
+    gap_unit : varchar(50)
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+entity "study_program_indicator_files" as sp_files {
+    * id : bigint UNSIGNED <<PK>>
+    --
+    study_program_accreditation_indicator_id : bigint UNSIGNED <<FK, UNIQUE>>
+    original_name : varchar(255)
+    file_name : varchar(255)
+    file_path : varchar(255)
+    file_size : bigint UNSIGNED
+    uploaded_by : bigint UNSIGNED <<FK>>
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+
+'==================================================
+' RELATIONSHIP - MASTER
+'==================================================
+
+faculties ||--o{ study_programs
+study_programs ||--o{ users
+
+
+'==================================================
+' RELATIONSHIP - UNIVERSITY ACCREDITATION
+'==================================================
+
+uni_agencies ||--o{ uni_templates
+uni_agencies ||--o{ uni_batches
+
+uni_batches ||--o{ uni_accreditations
+
+uni_accreditations ||--o{ uni_indicators
+uni_templates ||--o{ uni_indicators
+
+uni_indicators ||--o| uni_files
+users ||--o{ uni_files
+
+
+'==================================================
+' RELATIONSHIP - STUDY PROGRAM ACCREDITATION
+'==================================================
+
+sp_agencies ||--o{ sp_templates
+sp_agencies ||--o{ sp_batches
+
+study_programs ||--o{ sp_accreditations
+sp_batches ||--o{ sp_accreditations
+
+sp_accreditations ||--o{ sp_indicators
+sp_templates ||--o{ sp_indicators
+
+sp_indicators ||--o| sp_files
+users ||--o{ sp_files
+@enduml
