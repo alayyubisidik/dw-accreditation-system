@@ -11,16 +11,21 @@
 
                     <div>
                         <h2 class="mb-1">
-                            {{ $accreditation->batch->name ?? '-' }}
+                            {{ $accreditation->name ?? '-' }}
                         </h2>
 
                         <div class="text-secondary">
-                            {{ $accreditation->batch->agency->name ?? '-' }}
-                            &middot; Tahun {{ $accreditation->batch->year ?? '-' }}
+                            {{ $accreditation->agency->name ?? '-' }}
+                            &middot; Tahun {{ $accreditation->year ?? '-' }}
                         </div>
                     </div>
 
                     <div class="d-flex gap-2">
+
+                        <a href="{{ route('dashboard-admin.university.accreditations.input.index', $accreditation) }}"
+                            class="btn btn-success">
+                            Input Nilai
+                        </a>
 
                         <a href="{{ route('dashboard-admin.university.accreditations.indicators.create', $accreditation) }}"
                             class="btn btn-primary">

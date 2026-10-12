@@ -197,18 +197,6 @@
                                         {{ $indicator->title }}
                                     </div>
 
-                                    <div class="small text-secondary">
-                                        {{ $indicator->label_1 }}
-                                        @if ($indicator->label_2)
-                                            / {{ $indicator->label_2 }}
-                                        @endif
-                                    </div>
-
-                                    @if ($indicator->description)
-                                        <div class="small text-secondary mt-1">
-                                            {{ \Illuminate\Support\Str::limit($indicator->description, 100) }}
-                                        </div>
-                                    @endif
 
                                 </td>
 

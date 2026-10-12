@@ -12,12 +12,12 @@ class AccreditationInputController extends Controller
 {
     public function index(Request $request, UniversityAccreditation $accreditation)
     {
-        $accreditation->load('batch.agency');
+        $accreditation->load('agency');
 
         $query = $accreditation->indicators();
 
         if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
+            $query->where('title', 'like', '%'.$request->search.'%');
         }
 
         if ($request->filled('filter')) {
@@ -41,13 +41,13 @@ class AccreditationInputController extends Controller
                 case 'gap':
                     $query
                         ->orderByRaw("FIELD(formula_type, 'percentage', 'ratio')")
-                        ->orderByRaw("
+                        ->orderByRaw('
                         CASE
                             WHEN result IS NULL THEN 2
                             WHEN result >= target THEN 1
                             ELSE 0
                         END
-                    ")
+                    ')
                         ->orderByDesc('gap');
                     break;
             }
@@ -96,7 +96,7 @@ class AccreditationInputController extends Controller
     {
         abort_if($indicator->university_accreditation_id !== $accreditation->id, 404);
 
-        $accreditation->load('batch.agency');
+        $accreditation->load('agency');
 
         return view('university.accreditation-input.edit', compact('accreditation', 'indicator'));
     }
@@ -109,38 +109,38 @@ class AccreditationInputController extends Controller
             'value_1' => 'required|numeric|min:0',
             'value_2' => 'required|numeric|min:0.01',
         ], [
-            'value_1.required' => 'Nilai ' . $indicator->label_1 . ' wajib diisi.',
-            'value_1.numeric'  => 'Nilai ' . $indicator->label_1 . ' harus berupa angka.',
-            'value_1.min'      => 'Nilai ' . $indicator->label_1 . ' tidak boleh negatif.',
-            'value_2.required' => 'Nilai ' . ($indicator->label_2 ?? 'penyebut') . ' wajib diisi.',
-            'value_2.numeric'  => 'Nilai ' . ($indicator->label_2 ?? 'penyebut') . ' harus berupa angka.',
-            'value_2.min'      => 'Nilai ' . ($indicator->label_2 ?? 'penyebut') . ' harus lebih besar dari 0.',
+            'value_1.required' => 'Nilai '.$indicator->label_1.' wajib diisi.',
+            'value_1.numeric' => 'Nilai '.$indicator->label_1.' harus berupa angka.',
+            'value_1.min' => 'Nilai '.$indicator->label_1.' tidak boleh negatif.',
+            'value_2.required' => 'Nilai '.($indicator->label_2 ?? 'penyebut').' wajib diisi.',
+            'value_2.numeric' => 'Nilai '.($indicator->label_2 ?? 'penyebut').' harus berupa angka.',
+            'value_2.min' => 'Nilai '.($indicator->label_2 ?? 'penyebut').' harus lebih besar dari 0.',
         ]);
 
         $value1 = $validated['value_1'];
         $value2 = $validated['value_2'];
 
         if ($indicator->formula_type === 'percentage') {
-            $result         = ($value1 / $value2) * 100;
+            $result = ($value1 / $value2) * 100;
             $targetAbsolute = ($indicator->target / 100) * $value2;
         } else {
-            $result         = $value1 / $value2;
+            $result = $value1 / $value2;
             $targetAbsolute = $indicator->target * $value2;
         }
 
         $gap = max($targetAbsolute - $value1, 0);
 
         $indicator->update([
-            'value_1'         => $value1,
-            'value_2'         => $value2,
-            'result'          => round($result, 2),
+            'value_1' => $value1,
+            'value_2' => $value2,
+            'result' => round($result, 2),
             'target_absolute' => round($targetAbsolute, 2),
-            'gap'             => round($gap, 2),
+            'gap' => round($gap, 2),
         ]);
 
         // Auto-complete: jika semua indikator sudah terisi (result tidak null),
         // otomatis ubah status akreditasi menjadi 'completed'
-        $totalIndicators  = $accreditation->indicators()->count();
+        $totalIndicators = $accreditation->indicators()->count();
         $filledIndicators = $accreditation->indicators()->whereNotNull('result')->count();
 
         if ($totalIndicators > 0 && $filledIndicators === $totalIndicators && $accreditation->status !== 'completed') {

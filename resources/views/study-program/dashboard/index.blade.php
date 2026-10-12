@@ -2,31 +2,21 @@
 
 @section('content')
     <div class="container-xl py-4">
-
-        {{-- ══════════════════════════════════════════════════════════════
-             PAGE TITLE
-        ══════════════════════════════════════════════════════════════ --}}
         <div class="page-header mb-4">
-            <div class="row align-items-center">
+            <div class="row align-items-center g-3">
                 <div class="col">
-                    <div class="page-pretitle text-secondary">Admin</div>
-                    <h1 class="page-title fw-bold">
+                    <div class="page-pretitle text-secondary mb-1">Admin</div>
+                    <h1 class="page-title fw-bold mb-1">
                         <i class="ti ti-school me-2 text-primary"></i>
                         Dashboard Program Studi
                     </h1>
-                    <p class="text-secondary mt-1 mb-0">
+                    <p class="text-secondary mb-0">
                         Ringkasan dan monitoring akreditasi seluruh program studi
                     </p>
                 </div>
-                
             </div>
         </div>
 
-
-
-        {{-- ══════════════════════════════════════════════════════════════
-             STAT CARDS ROW 1
-        ══════════════════════════════════════════════════════════════ --}}
         <div class="row g-3 mb-4">
 
             {{-- Program Studi --}}
@@ -124,22 +114,18 @@
         </div>
 
 
-        {{-- ══════════════════════════════════════════════════════════════
-             PROGRESS PER PRODI — SEMUA BATCH
-        ══════════════════════════════════════════════════════════════ --}}
-        <div class="mb-2">
-            <h3 class="fw-bold mb-0">
+        <div class="mb-3">
+            <h3 class="fw-bold mb-1">
                 <i class="ti ti-list-check me-2 text-primary"></i>
                 Progress per Program Studi
             </h3>
-            <p class="text-secondary mt-1 mb-0">Menampilkan progres pengisian indikator untuk setiap batch akreditasi.</p>
+            <p class="text-secondary mb-0">Menampilkan progres pengisian indikator untuk setiap batch akreditasi.</p>
         </div>
 
         @forelse ($allBatchesProgress as $batch)
             <div class="card shadow-sm border-0 mb-4">
-                {{-- Card header --}}
-                <div class="card-header border-bottom d-flex align-items-center gap-3 flex-wrap py-3">
-                    <div class="p-2 rounded-2" style="background:{{ $batch->is_active ? '#eff6ff' : '#f8fafc' }};">
+                <div class="card-header border-bottom d-flex align-items-center gap-3 flex-wrap p-4">
+                    <div class="p-2 rounded-2 flex-shrink-0" style="background:{{ $batch->is_active ? '#eff6ff' : '#f8fafc' }};">
                         <i class="ti ti-calendar-event"
                             style="font-size:1.4rem; color:{{ $batch->is_active ? '#3b82f6' : '#94a3b8' }};"></i>
                     </div>
@@ -147,9 +133,9 @@
                         <div class="d-flex align-items-center gap-2 flex-wrap">
                             <h4 class="card-title mb-0 fw-bold">{{ $batch->name }}</h4>
                             @if ($batch->is_active)
-                                <span class="badge bg-primary">Aktif</span>
+                                <span class="badge bg-primary text-white">Aktif</span>
                             @else
-                                <span class="badge bg-secondary">Nonaktif</span>
+                                <span class="badge bg-secondary text-white">Nonaktif</span>
                             @endif
                         </div>
                         <div class="small text-secondary mt-1">
@@ -163,9 +149,8 @@
 
                 </div>
 
-                {{-- Table --}}
                 @if ($batch->accreditationProgress->isEmpty())
-                    <div class="card-body">
+                    <div class="card-body p-4">
                         <div class="empty py-4">
                             <div class="empty-img">
                                 <i class="ti ti-mood-empty" style="font-size:2.6rem; color:#cbd5e1;"></i>
@@ -179,14 +164,15 @@
                         <table class="table table-vcenter card-table mb-0">
                             <thead class="table-light">
                                 <tr>
-                                    <th style="width:1%;" class="text-center">#</th>
+                                    <th style="width:1%;" class="text-center ps-4">#</th>
                                     <th>Program Studi</th>
                                     <th style="min-width:180px;">Progress Pengisian</th>
+                                    <th style="min-width:180px;">Progress Tercapai</th>
                                     <th class="text-center">Total Indikator</th>
                                     <th class="text-center">Terisi</th>
                                     <th class="text-center">Tercapai</th>
                                     <th class="text-center">Belum Tercapai</th>
-                                    <th class="text-center">Aksi</th>
+                                    <th class="text-center pe-4">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -196,7 +182,7 @@
                                         $textColor = $acc->progress >= 80 ? 'text-success' : ($acc->progress >= 40 ? 'text-primary' : 'text-warning');
                                     @endphp
                                     <tr>
-                                        <td class="text-center text-secondary">{{ $loop->iteration }}</td>
+                                        <td class="text-center text-secondary ps-4">{{ $loop->iteration }}</td>
                                         <td class="fw-medium">{{ $acc->studyProgram->name ?? '-' }}</td>
                                         <td>
                                             <div class="d-flex align-items-center gap-2">
@@ -209,11 +195,22 @@
                                                 <span class="small fw-bold {{ $textColor }}" style="width:40px;">{{ $acc->progress }}%</span>
                                             </div>
                                         </td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="progress flex-fill" style="height:8px; border-radius:6px;">
+                                                    <div class="progress-bar bg-success"
+                                                        style="width:{{ $acc->achieved_progress }}%; border-radius:6px;"
+                                                        aria-valuenow="{{ $acc->achieved_progress }}" aria-valuemin="0" aria-valuemax="100">
+                                                    </div>
+                                                </div>
+                                                <span class="small fw-bold text-success" style="width:40px;">{{ $acc->achieved_progress }}%</span>
+                                            </div>
+                                        </td>
                                         <td class="text-center">{{ $acc->total_indicators }}</td>
                                         <td class="text-center fw-semibold text-primary">{{ $acc->filled_indicators }}</td>
                                         <td class="text-center fw-semibold text-success">{{ $acc->achieved_indicators }}</td>
                                         <td class="text-center fw-semibold text-danger">{{ $acc->filled_indicators - $acc->achieved_indicators }}</td>
-                                        <td class="text-center">
+                                        <td class="text-center pe-4">
                                             <a href="{{ route('dashboard-admin.study-program.accreditations.input.index', $acc) }}"
                                                 class="btn btn-sm btn-outline-primary">
                                                 <i class="ti ti-pencil me-1"></i>Input
@@ -228,7 +225,7 @@
             </div>
         @empty
             <div class="card shadow-sm border-0">
-                <div class="card-body">
+                <div class="card-body p-4">
                     <div class="empty py-5">
                         <div class="empty-img">
                             <i class="ti ti-calendar-off" style="font-size:3rem; color:#cbd5e1;"></i>

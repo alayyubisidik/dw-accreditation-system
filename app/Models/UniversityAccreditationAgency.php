@@ -17,8 +17,13 @@ class UniversityAccreditationAgency extends Model
         return $this->hasMany(UniversityIndicatorTemplate::class);
     }
 
-    public function universityAccreditationBatches(): HasMany
+    public function universityAccreditations(): HasMany
     {
-        return $this->hasMany(UniversityAccreditationBatch::class);
+        return $this->hasMany(UniversityAccreditation::class);
+    }
+
+    public function accreditations(): HasMany
+    {
+        return $this->hasMany(UniversityAccreditation::class);
     }
 }

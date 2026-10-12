@@ -80,6 +80,7 @@
                                             <th>Batch</th>
                                             <th>Lembaga</th>
                                             <th style="width: 160px">Progress</th>
+                                            <th style="width: 160px">Progress Tercapai</th>
                                             <th>Status</th>
                                             <th style="width: 160px">Aksi</th>
                                         </tr>
@@ -105,6 +106,14 @@
                                                             <div class="progress-bar bg-primary" style="width: {{ $accreditation->progress }}%"></div>
                                                         </div>
                                                         <span class="text-secondary small">{{ $accreditation->progress }}%</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <div class="progress flex-grow-1" style="height: 6px;">
+                                                            <div class="progress-bar bg-success" style="width: {{ $accreditation->achieved_progress }}%"></div>
+                                                        </div>
+                                                        <span class="text-secondary small">{{ $accreditation->achieved_progress }}%</span>
                                                     </div>
                                                 </td>
                                                 <td>

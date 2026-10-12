@@ -22,6 +22,11 @@
 
                     <div class="d-flex gap-2">
 
+                        <a href="{{ route('dashboard-operator.accreditations.input.index', $accreditation) }}"
+                            class="btn btn-success">
+                            Input Nilai
+                        </a>
+
                         <a href="{{ route('dashboard-operator.accreditations.indicators.create', $accreditation) }}"
                             class="btn btn-primary">
                             Tambah Indikator

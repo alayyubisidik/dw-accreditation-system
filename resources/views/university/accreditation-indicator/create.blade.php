@@ -14,9 +14,9 @@
                     </h3>
 
                     <div class="text-secondary">
-                        {{ $accreditation->batch->name ?? '-' }}
-                        &middot; {{ $accreditation->batch->agency->name ?? '-' }}
-                        &middot; Tahun {{ $accreditation->batch->year ?? '-' }}
+                        {{ $accreditation->name ?? '-' }}
+                        &middot; {{ $accreditation->agency->name ?? '-' }}
+                        &middot; Tahun {{ $accreditation->year ?? '-' }}
                     </div>
                 </div>
 

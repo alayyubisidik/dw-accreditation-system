@@ -14,12 +14,12 @@ class AccreditationIndicatorController extends Controller
 {
     public function index(Request $request, UniversityAccreditation $accreditation)
     {
-        $accreditation->load('batch.agency');
+        $accreditation->load('agency');
 
         $indicatorsQuery = $accreditation->indicators();
 
         if ($request->filled('search')) {
-            $indicatorsQuery->where('title', 'like', '%' . $request->search . '%');
+            $indicatorsQuery->where('title', 'like', '%'.$request->search.'%');
         }
 
         $indicators = $indicatorsQuery->get();
@@ -29,7 +29,7 @@ class AccreditationIndicatorController extends Controller
             ->pluck('university_indicator_template_id');
 
         $availableTemplates = UniversityIndicatorTemplate::query()
-            ->where('university_accreditation_agency_id', $accreditation->batch->university_accreditation_agency_id)
+            ->where('university_accreditation_agency_id', $accreditation->university_accreditation_agency_id)
             ->whereNotIn('id', $takenTemplateIds)
             ->get();
 
@@ -42,9 +42,9 @@ class AccreditationIndicatorController extends Controller
 
     public function import(Request $request, UniversityAccreditation $accreditation)
     {
-        $accreditation->load('batch');
+        $accreditation->load('agency');
 
-        $agencyId = $accreditation->batch->university_accreditation_agency_id;
+        $agencyId = $accreditation->university_accreditation_agency_id;
 
         $takenTemplateIds = $accreditation->indicators()
             ->whereNotNull('university_indicator_template_id')
@@ -65,13 +65,13 @@ class AccreditationIndicatorController extends Controller
             foreach ($templates as $template) {
                 $accreditation->indicators()->create([
                     'university_indicator_template_id' => $template->id,
-                    'title'            => $template->title,
-                    'description'      => $template->description,
-                    'formula_type'     => $template->formula_type,
-                    'label_1'          => $template->label_1,
-                    'label_2'          => $template->label_2,
-                    'target'           => $template->target,
-                    'gap_unit'         => $template->gap_unit,
+                    'title' => $template->title,
+                    'description' => $template->description,
+                    'formula_type' => $template->formula_type,
+                    'label_1' => $template->label_1,
+                    'label_2' => $template->label_2,
+                    'target' => $template->target,
+                    'gap_unit' => $template->gap_unit,
                     'strategic_reason' => $template->strategic_reason,
                 ]);
             }
@@ -85,14 +85,14 @@ class AccreditationIndicatorController extends Controller
             'university_indicator_template_id' => 'required|exists:university_indicator_templates,id',
         ], [
             'university_indicator_template_id.required' => 'Silakan pilih indikator master terlebih dahulu.',
-            'university_indicator_template_id.exists'   => 'Indikator master tidak valid.',
+            'university_indicator_template_id.exists' => 'Indikator master tidak valid.',
         ]);
 
         $template = UniversityIndicatorTemplate::where('university_accreditation_agency_id', $agencyId)
             ->whereNotIn('id', $takenTemplateIds)
             ->find($validated['university_indicator_template_id']);
 
-        if (!$template) {
+        if (! $template) {
             AlertService::error('Indikator sudah diambil atau tidak tersedia untuk lembaga ini.');
 
             return redirect()->route('dashboard-admin.university.accreditations.indicators.index', $accreditation);
@@ -100,13 +100,13 @@ class AccreditationIndicatorController extends Controller
 
         $accreditation->indicators()->create([
             'university_indicator_template_id' => $template->id,
-            'title'            => $template->title,
-            'description'      => $template->description,
-            'formula_type'     => $template->formula_type,
-            'label_1'          => $template->label_1,
-            'label_2'          => $template->label_2,
-            'target'           => $template->target,
-            'gap_unit'         => $template->gap_unit,
+            'title' => $template->title,
+            'description' => $template->description,
+            'formula_type' => $template->formula_type,
+            'label_1' => $template->label_1,
+            'label_2' => $template->label_2,
+            'target' => $template->target,
+            'gap_unit' => $template->gap_unit,
             'strategic_reason' => $template->strategic_reason,
         ]);
 
@@ -117,7 +117,7 @@ class AccreditationIndicatorController extends Controller
 
     public function create(UniversityAccreditation $accreditation)
     {
-        $accreditation->load('batch.agency');
+        $accreditation->load('agency');
 
         return view('university.accreditation-indicator.create', compact('accreditation'));
     }
@@ -130,21 +130,21 @@ class AccreditationIndicatorController extends Controller
                 'string',
                 'max:255',
                 Rule::unique('university_accreditation_indicators')
-                    ->where(fn($query) => $query->where(
+                    ->where(fn ($query) => $query->where(
                         'university_accreditation_id',
                         $accreditation->id
                     )),
             ],
-            'description'      => 'nullable|string',
-            'formula_type'     => 'required|in:percentage,ratio',
-            'label_1'          => 'required|string|max:255',
-            'label_2'          => 'nullable|string|max:255',
-            'target'           => 'required|numeric|min:0',
-            'gap_unit'         => 'nullable|string|max:50',
+            'description' => 'nullable|string',
+            'formula_type' => 'required|in:percentage,ratio',
+            'label_1' => 'required|string|max:255',
+            'label_2' => 'nullable|string|max:255',
+            'target' => 'required|numeric|min:0',
+            'gap_unit' => 'nullable|string|max:50',
             'strategic_reason' => 'nullable|string',
         ], [
-            'title.required'        => 'Judul indikator wajib diisi.',
-            'title.unique'          => 'Judul indikator sudah digunakan.',
+            'title.required' => 'Judul indikator wajib diisi.',
+            'title.unique' => 'Judul indikator sudah digunakan.',
             'formula_type.required' => 'Tipe formula wajib dipilih.',
         ]);
 

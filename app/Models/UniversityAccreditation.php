@@ -9,13 +9,23 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class UniversityAccreditation extends Model
 {
     protected $fillable = [
-        'university_accreditation_batch_id',
+        'university_accreditation_agency_id',
+        'name',
+        'year',
         'status',
+        'description',
     ];
 
-    public function batch(): BelongsTo
+    protected function casts(): array
     {
-        return $this->belongsTo(UniversityAccreditationBatch::class, 'university_accreditation_batch_id');
+        return [
+            'year' => 'integer',
+        ];
+    }
+
+    public function agency(): BelongsTo
+    {
+        return $this->belongsTo(UniversityAccreditationAgency::class, 'university_accreditation_agency_id');
     }
 
     public function indicators(): HasMany

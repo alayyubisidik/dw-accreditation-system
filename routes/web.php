@@ -6,20 +6,8 @@
 use App\Http\Controllers\Admin\Master\FacultyController;
 use App\Http\Controllers\Admin\Master\StudyProgramController;
 use App\Http\Controllers\Admin\Master\UserController;
-
 // ============================================================
 // Admin\University Controllers
-// ============================================================
-use App\Http\Controllers\Admin\University\AccreditationAgencyController as UniversityAccreditationAgencyController;
-use App\Http\Controllers\Admin\University\AccreditationBatchController as UniversityAccreditationBatchController;
-use App\Http\Controllers\Admin\University\AccreditationController as UniversityAccreditationController;
-use App\Http\Controllers\Admin\University\AccreditationIndicatorController as UniversityAccreditationIndicatorController;
-use App\Http\Controllers\Admin\University\AccreditationInputController as UniversityAccreditationInputController;
-use App\Http\Controllers\Admin\University\DashboardController as UniversityDashboardController;
-use App\Http\Controllers\Admin\University\IndicatorTemplateController as UniversityIndicatorTemplateController;
-
-// ============================================================
-// Admin\StudyProgram Controllers
 // ============================================================
 use App\Http\Controllers\Admin\StudyProgram\AccreditationAgencyController as StudyProgramAccreditationAgencyController;
 use App\Http\Controllers\Admin\StudyProgram\AccreditationBatchController as StudyProgramAccreditationBatchController;
@@ -27,8 +15,16 @@ use App\Http\Controllers\Admin\StudyProgram\AccreditationController as StudyProg
 use App\Http\Controllers\Admin\StudyProgram\AccreditationIndicatorController as StudyProgramAccreditationIndicatorController;
 use App\Http\Controllers\Admin\StudyProgram\AccreditationInputController as StudyProgramAccreditationInputController;
 use App\Http\Controllers\Admin\StudyProgram\DashboardController as StudyProgramDashboardController;
+// ============================================================
+// Admin\StudyProgram Controllers
+// ============================================================
 use App\Http\Controllers\Admin\StudyProgram\IndicatorTemplateController as StudyProgramIndicatorTemplateController;
-
+use App\Http\Controllers\Admin\University\AccreditationAgencyController as UniversityAccreditationAgencyController;
+use App\Http\Controllers\Admin\University\AccreditationController as UniversityAccreditationController;
+use App\Http\Controllers\Admin\University\AccreditationIndicatorController as UniversityAccreditationIndicatorController;
+use App\Http\Controllers\Admin\University\AccreditationInputController as UniversityAccreditationInputController;
+use App\Http\Controllers\Admin\University\DashboardController as UniversityDashboardController;
+use App\Http\Controllers\Admin\University\IndicatorTemplateController as UniversityIndicatorTemplateController;
 // ============================================================
 // Operator Controllers
 // ============================================================
@@ -36,12 +32,11 @@ use App\Http\Controllers\Operator\AccreditationController as OperatorAccreditati
 use App\Http\Controllers\Operator\AccreditationIndicatorController as OperatorAccreditationIndicatorController;
 use App\Http\Controllers\Operator\AccreditationInputController as OperatorAccreditationInputController;
 use App\Http\Controllers\Operator\DashboardOperatorController;
-
-
 // ============================================================
 // Other
 // ============================================================
 use App\Http\Controllers\ProfileController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -61,22 +56,24 @@ Route::middleware(['auth'])->group(function () {
 // ============================================================
 // Admin Dashboard Mode Switch
 // ============================================================
-Route::post('dashboard-admin/switch-mode', function (\Illuminate\Http\Request $request) {
+Route::post('dashboard-admin/switch-mode', function (Request $request) {
     $mode = $request->input('mode');
-    if (!in_array($mode, ['university', 'study-program'])) {
+    if (! in_array($mode, ['university', 'study-program'])) {
         return redirect()->back();
     }
 
     session(['admin_dashboard_mode' => $mode]);
 
     $currentUrl = url()->previous();
-    $prefix     = $mode === 'university' ? 'university' : 'study-program';
+    $prefix = $mode === 'university' ? 'university' : 'study-program';
 
     // Peta segment URL ke nama route equivalen
     $segmentMap = [
         'accreditation-agencies' => "dashboard-admin.{$prefix}.accreditation-agencies.index",
-        'accreditation-batches'  => "dashboard-admin.{$prefix}.accreditation-batches.index",
-        'accreditations'         => "dashboard-admin.{$prefix}.accreditations.index",
+        'accreditation-batches' => $mode === 'university'
+            ? 'dashboard-admin.university.accreditations.index'
+            : 'dashboard-admin.study-program.accreditation-batches.index',
+        'accreditations' => "dashboard-admin.{$prefix}.accreditations.index",
     ];
 
     foreach ($segmentMap as $segment => $routeName) {
@@ -132,13 +129,15 @@ Route::prefix('dashboard-admin')->name('dashboard-admin.')->middleware(['role:ad
                 ->name('indicator-templates.destroy');
         });
 
-        Route::resource('accreditation-batches', UniversityAccreditationBatchController::class);
-
-        Route::resource('accreditations', UniversityAccreditationController::class);
+        Route::resource('accreditations', UniversityAccreditationController::class)->only(['index', 'create', 'store', 'destroy']);
         Route::get('accreditations/{accreditation}/preview', [UniversityAccreditationController::class, 'preview'])
             ->name('accreditations.preview');
         Route::patch('accreditations/{accreditation}/complete', [UniversityAccreditationController::class, 'toggleComplete'])
             ->name('accreditations.complete');
+        Route::get('accreditations-compare', [UniversityAccreditationController::class, 'showCompare'])
+            ->name('accreditations.compare.select');
+        Route::get('accreditations-compare/result', [UniversityAccreditationController::class, 'compare'])
+            ->name('accreditations.compare');
 
         Route::prefix('accreditations/{accreditation}')->name('accreditations.')->group(function () {
             Route::get('indicators', [UniversityAccreditationIndicatorController::class, 'index'])
@@ -200,6 +199,10 @@ Route::prefix('dashboard-admin')->name('dashboard-admin.')->middleware(['role:ad
             ->name('accreditations.preview');
         Route::patch('accreditations/{accreditation}/complete', [StudyProgramAccreditationController::class, 'toggleComplete'])
             ->name('accreditations.complete');
+        Route::get('accreditations-compare', [StudyProgramAccreditationController::class, 'showCompare'])
+            ->name('accreditations.compare.select');
+        Route::get('accreditations-compare/result', [StudyProgramAccreditationController::class, 'compare'])
+            ->name('accreditations.compare');
 
         Route::prefix('accreditations/{accreditation}')->name('accreditations.')->group(function () {
             Route::get('indicators', [StudyProgramAccreditationIndicatorController::class, 'index'])
@@ -252,5 +255,4 @@ Route::prefix('dashboard-operator')->name('dashboard-operator.')->middleware(['r
         ->name('accreditations.input.update');
 });
 
-
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

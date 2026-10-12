@@ -61,13 +61,6 @@
                             </a>
                         </li>
 
-                        <li class="nav-item {{ setActive(['dashboard-admin.university.accreditation-batches.*'], 'active') }}">
-                            <a class="nav-link" href="{{ route('dashboard-admin.university.accreditation-batches.index') }}">
-                                <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-calendar-event"></i></span>
-                                <span class="nav-link-title">Batch Akreditasi</span>
-                            </a>
-                        </li>
-
                         <li class="nav-item {{ setActive(['dashboard-admin.university.accreditations.*'], 'active') }}">
                             <a class="nav-link" href="{{ route('dashboard-admin.university.accreditations.index') }}">
                                 <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-medal"></i></span>

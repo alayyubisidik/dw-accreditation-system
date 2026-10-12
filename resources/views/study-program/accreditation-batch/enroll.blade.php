@@ -134,9 +134,9 @@
                                                     </div>
 
                                                     @if ($enrolled)
-                                                        <span class="badge bg-success-lt flex-shrink-0">
-                                                            <i class="ti ti-check me-1"></i>
-                                                            Terdaftar
+                                                        <span class="badge bg-success text-white d-inline-flex align-items-center gap-1 flex-shrink-0">
+                                                            <i class="ti ti-check"></i>
+                                                            <span>Terdaftar</span>
                                                         </span>
                                                     @endif
 

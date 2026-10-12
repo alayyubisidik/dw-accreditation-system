@@ -266,118 +266,64 @@
 @push('scripts')
     <script>
         const roleSelect = document.getElementById('role');
+        const facultySelect = document.getElementById('faculty_id');
+        const studyProgramSelect = document.getElementById('study_program_id');
         const facultyWrapper = document.getElementById('faculty-wrapper');
         const studyProgramWrapper = document.getElementById('study-program-wrapper');
+
+        const studyProgramOptions = Array.from(studyProgramSelect.options).map(option => ({
+            value: option.value,
+            text: option.text,
+            facultyId: option.dataset.faculty || ''
+        }));
+
+        function filterStudyPrograms(preserveSelected = false) {
+            const facultyId = facultySelect.value;
+            const selectedVal = preserveSelected ? studyProgramSelect.value : '';
+
+            studyProgramSelect.innerHTML = '<option value="">Pilih Program Studi</option>';
+
+            if (!facultyId) {
+                return;
+            }
+
+            studyProgramOptions.forEach(item => {
+                if (item.value && String(item.facultyId) === String(facultyId)) {
+                    const option = document.createElement('option');
+                    option.value = item.value;
+                    option.text = item.text;
+                    option.dataset.faculty = item.facultyId;
+                    if (item.value === selectedVal) {
+                        option.selected = true;
+                    }
+                    studyProgramSelect.appendChild(option);
+                }
+            });
+        }
 
         function handleRole() {
             const role = roleSelect.value;
 
-            const facultySelect = document.getElementById('faculty_id');
-            const studyProgramSelect = document.getElementById('study_program_id');
-
-            // Default: sembunyikan semua
             facultyWrapper.style.display = 'none';
             studyProgramWrapper.style.display = 'none';
 
-            switch (role) {
-
-                case 'admin':
-                    // Admin tidak membutuhkan fakultas maupun prodi
-                    facultySelect.value = '';
-                    studyProgramSelect.value = '';
-                    break;
-
-
-
-                case 'dekan':
-                    // Dekan hanya memilih fakultas
-                    facultyWrapper.style.display = 'block';
-
-                    studyProgramSelect.value = '';
-                    break;
-
-                case 'operator':
-                    // Operator memilih fakultas dan prodi
-                    facultyWrapper.style.display = 'block';
-                    studyProgramWrapper.style.display = 'block';
-                    break;
-
-                default:
-                    facultySelect.value = '';
-                    studyProgramSelect.value = '';
-                    break;
-            }
-
-            filterStudyPrograms();
-        }
-
-        function filterStudyPrograms() {
-
-            const facultyId = facultySelect.value;
-
-            Array.from(studyProgramSelect.options).forEach(option => {
-
-                if (option.value === '') {
-                    option.hidden = false;
-                    return;
-                }
-
-                if (!facultyId) {
-                    option.hidden = true;
-                    return;
-                }
-
-                option.hidden = option.dataset.faculty != facultyId;
-            });
-
-            if (
-                studyProgramSelect.selectedOptions.length &&
-                studyProgramSelect.selectedOptions[0].hidden
-            ) {
+            if (role === 'operator') {
+                facultyWrapper.style.display = 'block';
+                studyProgramWrapper.style.display = 'block';
+            } else {
+                facultySelect.value = '';
                 studyProgramSelect.value = '';
+                filterStudyPrograms(false);
             }
         }
 
         roleSelect.addEventListener('change', handleRole);
+        facultySelect.addEventListener('change', function() {
+            filterStudyPrograms(false);
+        });
+
+        filterStudyPrograms(true);
         handleRole();
-
-
-        // Filter prodi berdasarkan fakultas
-        const facultySelect = document.getElementById('faculty_id');
-        const studyProgramSelect = document.getElementById('study_program_id');
-
-        function filterStudyPrograms() {
-            const facultyId = facultySelect.value;
-
-            Array.from(studyProgramSelect.options).forEach(option => {
-
-                if (option.value === '') {
-                    option.hidden = false;
-                    return;
-                }
-
-                option.hidden =
-                    option.dataset.faculty !== facultyId;
-
-            });
-
-            if (studyProgramSelect.selectedOptions.length) {
-                const selected =
-                    studyProgramSelect.selectedOptions[0];
-
-                if (selected.hidden) {
-                    studyProgramSelect.value = '';
-                }
-            }
-        }
-
-        facultySelect.addEventListener(
-            'change',
-            filterStudyPrograms
-        );
-
-        filterStudyPrograms();
-
 
         // Preview avatar
         document.getElementById('avatar-upload')
@@ -397,7 +343,6 @@
                 reader.readAsDataURL(e.target.files[0]);
 
             });
-
 
         // Show / hide password
         document.querySelectorAll('.toggle-password')

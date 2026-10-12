@@ -115,4 +115,33 @@
             });
 
         });
+
+    $(function() {
+
+        $('.complete-accreditation-form').on('submit', function(e) {
+
+            e.preventDefault();
+
+            const form = $(this);
+
+            Swal.fire({
+                title: form.data('title'),
+                text: form.data('text'),
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#16a34a',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: form.data('confirm-text'),
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+                    form.off('submit').submit();
+                }
+
+            });
+
+        });
+
+    });
 </script>

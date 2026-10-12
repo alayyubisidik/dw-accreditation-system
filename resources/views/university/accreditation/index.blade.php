@@ -10,6 +10,16 @@
                 <h3 class="card-title">
                     Akreditasi Universitas
                 </h3>
+                <div class="card-options d-flex gap-2">
+                    <a href="{{ route('dashboard-admin.university.accreditations.create') }}"
+                        class="btn btn-primary btn-sm">
+                        <i class="ti ti-plus me-1"></i> Tambah Akreditasi
+                    </a>
+                    <a href="{{ route('dashboard-admin.university.accreditations.compare.select') }}"
+                        class="btn btn-outline-primary btn-sm">
+                        <i class="ti ti-arrows-diff me-1"></i> Bandingkan Akreditasi
+                    </a>
+                </div>
             </div>
 
             <div class="card-body border-bottom">
@@ -20,7 +30,7 @@
 
                     {{-- SEARCH --}}
                     <input type="text" name="search" class="form-control"
-                        placeholder="Cari batch / lembaga akreditasi..." value="{{ request('search') }}"
+                        placeholder="Cari akreditasi / lembaga akreditasi..." value="{{ request('search') }}"
                         style="width:280px">
 
                     {{-- TAHUN --}}
@@ -65,8 +75,7 @@
 
                     @forelse($accreditations as $accreditation)
                         @php
-                            $batch = $accreditation->batch;
-                            $agency = $batch?->agency;
+                            $agency = $accreditation->agency;
 
                             $totalIndicators     = $accreditation->total_indicators;
                             $completedIndicators = $accreditation->completed_indicators;
@@ -94,16 +103,34 @@
 
                                         <div>
                                             <h3 class="mb-1">
-                                                {{ $batch->name ?? '-' }}
+                                                {{ $accreditation->name ?? 'Akreditasi Universitas' }}
                                             </h3>
                                             <div class="text-secondary">
-                                                {{ $agency->name ?? '-' }} &middot; Tahun {{ $batch->year ?? '-' }}
+                                                {{ $agency->name ?? '-' }} &middot; Tahun {{ $accreditation->year ?? '-' }}
                                             </div>
                                         </div>
 
-                                        <span class="badge {{ $statusBadge[0] }} text-white">
-                                            {{ $statusBadge[1] }}
-                                        </span>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="badge {{ $statusBadge[0] }} text-white">
+                                                {{ $statusBadge[1] }}
+                                            </span>
+                                            <div class="dropdown">
+                                                <button type="button" class="btn btn-icon btn-ghost-secondary btn-sm"
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="ti ti-dots-vertical"></i>
+                                                </button>
+                                                <div class="dropdown-menu dropdown-menu-end">
+                                                    <form action="{{ route('dashboard-admin.university.accreditations.destroy', $accreditation) }}"
+                                                        method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="dropdown-item text-danger delete-btn">
+                                                            <i class="ti ti-trash me-2"></i> Hapus
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
 
                                     </div>
 
@@ -194,7 +221,7 @@
                                 <div class="empty-header">0</div>
                                 <p class="empty-title">Data tidak ditemukan</p>
                                 <p class="empty-subtitle text-secondary">
-                                    Belum ada Batch Akreditasi yang tersedia, atau ubah filter pencarian.
+                                    Belum ada Akreditasi yang tersedia, atau ubah filter pencarian.
                                 </p>
                             </div>
                         </div>

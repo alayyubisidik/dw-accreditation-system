@@ -25,9 +25,9 @@
                         {{-- STATUS BADGE --}}
                         <div class="mt-2">
                             @if ($accreditation->status === 'completed')
-                                <span class="badge bg-success fs-6"><i class="ti ti-circle-check me-1"></i>Selesai</span>
+                                <span class="badge bg-success text-white fs-6 d-inline-flex align-items-center gap-1"><i class="ti ti-circle-check"></i>Selesai</span>
                             @else
-                                <span class="badge bg-warning text-dark fs-6"><i class="ti ti-clock me-1"></i>Belum Selesai</span>
+                                <span class="badge bg-warning text-dark fs-6 d-inline-flex align-items-center gap-1"><i class="ti ti-clock"></i>Belum Selesai</span>
                             @endif
                         </div>
 
@@ -38,7 +38,10 @@
                         {{-- TOMBOL TOGGLE COMPLETE --}}
                         <form method="POST"
                             action="{{ route('dashboard-admin.study-program.accreditations.complete', $accreditation) }}"
-                            onsubmit="return confirm('{{ $accreditation->status === 'completed' ? 'Kembalikan ke in-progress?' : 'Tandai akreditasi ini sebagai selesai?' }}')">
+                            class="complete-accreditation-form"
+                            data-title="{{ $accreditation->status === 'completed' ? 'Kembalikan ke In-Progress?' : 'Tandai Selesai?' }}"
+                            data-text="{{ $accreditation->status === 'completed' ? 'Status akreditasi akan dikembalikan menjadi in-progress.' : 'Pastikan seluruh data indikator sudah sesuai sebelum menandai selesai.' }}"
+                            data-confirm-text="{{ $accreditation->status === 'completed' ? 'Ya, Kembalikan' : 'Ya, Tandai Selesai' }}">
                             @csrf
                             @method('PATCH')
                             @if ($accreditation->status === 'completed')
@@ -228,18 +231,6 @@
                                         {{ $indicator->title }}
                                     </div>
 
-                                    <div class="small text-secondary">
-                                        {{ $indicator->label_1 }}
-                                        @if ($indicator->label_2)
-                                            / {{ $indicator->label_2 }}
-                                        @endif
-                                    </div>
-
-                                    @if ($indicator->description)
-                                        <div class="small text-secondary mt-1">
-                                            {{ \Illuminate\Support\Str::limit($indicator->description, 100) }}
-                                        </div>
-                                    @endif
 
                                 </td>
 

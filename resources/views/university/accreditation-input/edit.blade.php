@@ -16,8 +16,8 @@
                         </h2>
 
                         <div class="text-secondary">
-                            {{ $accreditation->batch->name ?? '-' }}
-                            &middot; {{ $accreditation->batch->agency->name ?? '-' }}
+                            {{ $accreditation->name ?? '-' }}
+                            &middot; {{ $accreditation->agency->name ?? '-' }}
                         </div>
                     </div>
 

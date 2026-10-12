@@ -39,6 +39,9 @@ class DashboardOperatorController extends Controller
                 $accreditation->progress = $accreditation->total_indicators > 0
                     ? round($accreditation->filled_indicators / $accreditation->total_indicators * 100)
                     : 0;
+                $accreditation->achieved_progress = $accreditation->total_indicators > 0
+                    ? round($accreditation->achieved_indicators / $accreditation->total_indicators * 100)
+                    : 0;
 
                 $accreditation->unfilled_indicators   = $accreditation->total_indicators - $accreditation->filled_indicators;
                 $accreditation->unachieved_indicators = $accreditation->filled_indicators - $accreditation->achieved_indicators;

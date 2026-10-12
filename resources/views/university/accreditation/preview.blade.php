@@ -23,7 +23,7 @@
                 <div class="ap-header-info">
 
                     <div class="ap-eyebrow">
-                        {{ $accreditation->batch->agency->name }}
+                        {{ $accreditation->agency->name }}
                     </div>
 
                     <h2 class="ap-title">
@@ -32,12 +32,12 @@
 
                     <div class="ap-meta-grid">
                         <div class="ap-meta-item">
-                            <span class="ap-meta-label">Batch</span>
-                            <span class="ap-meta-value">{{ $accreditation->batch->name }}</span>
+                            <span class="ap-meta-label">Akreditasi</span>
+                            <span class="ap-meta-value">{{ $accreditation->name }}</span>
                         </div>
                         <div class="ap-meta-item">
                             <span class="ap-meta-label">Tahun</span>
-                            <span class="ap-meta-value">{{ $accreditation->batch->year }}</span>
+                            <span class="ap-meta-value">{{ $accreditation->year }}</span>
                         </div>
                         <div class="ap-meta-item">
                             <span class="ap-meta-label">Status</span>
@@ -75,9 +75,9 @@
 
             <div class="card-body">
 
-                @if ($accreditation->batch->description)
+                @if ($accreditation->description)
                     <div class="ap-note">
-                        {{ $accreditation->batch->description }}
+                        {{ $accreditation->description }}
                     </div>
                 @endif
 

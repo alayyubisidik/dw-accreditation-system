@@ -10,6 +10,12 @@
                 <h3 class="card-title">
                     Akreditasi Program Studi
                 </h3>
+                <div class="card-options">
+                    <a href="{{ route('dashboard-admin.study-program.accreditations.compare.select') }}"
+                        class="btn btn-outline-primary btn-sm">
+                        <i class="ti ti-arrows-diff me-1"></i> Bandingkan Batch
+                    </a>
+                </div>
             </div>
 
             <div class="card-body border-bottom">
@@ -119,9 +125,27 @@
                                             </div>
                                         </div>
 
-                                        <span class="badge {{ $statusBadge[0] }} text-white">
-                                            {{ $statusBadge[1] }}
-                                        </span>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="badge {{ $statusBadge[0] }} text-white">
+                                                {{ $statusBadge[1] }}
+                                            </span>
+                                            <div class="dropdown">
+                                                <button type="button" class="btn btn-icon btn-ghost-secondary btn-sm"
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="ti ti-dots-vertical"></i>
+                                                </button>
+                                                <div class="dropdown-menu dropdown-menu-end">
+                                                    <form action="{{ route('dashboard-admin.study-program.accreditations.destroy', $accreditation) }}"
+                                                        method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="dropdown-item text-danger delete-btn">
+                                                            <i class="ti ti-trash me-2"></i> Hapus
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
 
                                     </div>
 

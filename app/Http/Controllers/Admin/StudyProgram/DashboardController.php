@@ -37,11 +37,13 @@ class DashboardController extends Controller
                         fn($i) => !is_null($i->result) && !is_null($i->target_absolute) && $i->result >= $i->target_absolute
                     )->count();
                     $pct      = $total > 0 ? round(($filled / $total) * 100) : 0;
+                    $achievedPct = $total > 0 ? round(($achieved / $total) * 100) : 0;
 
                     $acc->setAttribute('total_indicators', $total);
                     $acc->setAttribute('filled_indicators', $filled);
                     $acc->setAttribute('achieved_indicators', $achieved);
                     $acc->setAttribute('progress', $pct);
+                    $acc->setAttribute('achieved_progress', $achievedPct);
                     return $acc;
                 })->sortByDesc('progress');
 

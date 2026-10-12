@@ -15,8 +15,8 @@ class AccreditationAgencyController extends Controller
         $agencies = UniversityAccreditationAgency::query()
 
             ->when($request->search, function ($query) use ($request) {
-                $query->where('name', 'like', '%' . $request->search . '%')
-                    ->orWhere('description', 'like', '%' . $request->search . '%');
+                $query->where('name', 'like', '%'.$request->search.'%')
+                    ->orWhere('description', 'like', '%'.$request->search.'%');
             })
 
             ->latest()
@@ -85,7 +85,7 @@ class AccreditationAgencyController extends Controller
 
     public function destroy(UniversityAccreditationAgency $accreditationAgency)
     {
-        if ($accreditationAgency->universityAccreditationBatches()->exists()) {
+        if ($accreditationAgency->universityAccreditations()->exists()) {
 
             AlertService::error(
                 'Lembaga akreditasi tidak dapat dihapus karena masih digunakan pada data akreditasi.'
